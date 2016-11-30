@@ -193,11 +193,11 @@ for dataset in datasets:
     unclassified = 0
     accuracyAvg = 0
 
-    datasetResultsFile = directory + os.sep + "prediction" + os.sep + "results" + os.sep + dataset["filename"] + ".summary.txt"
+    datasetResultsFile = directory + os.sep + "results" + os.sep + dataset["filename"] + ".summary.txt"
 
     for i in range(0, 10):
         jsonDataFile = open(
-            directory + os.sep + "prediction" + os.sep + "results" + os.sep + dataset["filename"] + str(i) + ".evalResult.json", "r")
+            directory + os.sep + "results" + os.sep + dataset["filename"] + str(i) + ".evalResult.json", "r")
         data = json.load(jsonDataFile)
         jsonDataFile.close()
         dataCorrect = int(data["correct"])
@@ -225,7 +225,8 @@ for dataset in datasets:
     datasetOutput.write("True positives:" + str(correct) + "\n")
     datasetOutput.write("False positives:" + str(incorrect) + "\n")
     datasetOutput.write("Uncovered:" + str(unclassified) + "\n\n")
-    datasetOutput.write("Accuracy:" + str(correct / rowCount) + "\n")
+    datasetOutput.write("Accuracy (total):" + str(correct / rowCount) + "\n")
+    datasetOutput.write("Average of accuracies:" + str(accuracyAvg / 10) + "\n")
     datasetOutput.close()
 
 output.close()
