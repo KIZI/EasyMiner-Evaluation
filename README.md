@@ -1,3 +1,3 @@
-# Results folder
+# EasyMiner-Evaluation
 
-This folder contains results from evaluation script.   
+This repository contains prepared evaluation datasets and evaluation scripts for [EasyMiner project](http://easyminer.eu).    
