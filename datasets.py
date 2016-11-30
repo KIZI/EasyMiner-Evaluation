@@ -8,7 +8,7 @@ datasets=[
 {"filename":"pima","targetvariablename":"class"},
 {"filename":"tic-tac-toe","targetvariablename":"Class"},
 {"filename":"audiology","targetvariablename":"class"},
-{"filename":"balance-scale","targeatvariablename":"class"},
+{"filename":"balance-scale","targetvariablename":"class"},
 {"filename":"car","targetvariablename":"class"},
 {"filename":"breast-cancer","targetvariablename":"class"},
 {"filename":"house-votes-84","targetvariablename":"class"},
