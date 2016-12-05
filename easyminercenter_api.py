@@ -23,11 +23,11 @@ IM_SUPP = 0.01
 IM_AUTO_CONF_SUPP_MAX_RULE_LENGTH = 5
 # endregion TASK CONFIG
 
-#region import config from easyminercenter_api_config.py
-if os.path.isfile(os.curdir+os.sep+'easyminercenter_api_config.py'):
+# region import config from easyminercenter_api_config.py
+if os.path.isfile(os.curdir + os.sep + 'easyminercenter_api_config.py'):
     # noinspection PyUnresolvedReferences
     from easyminercenter_api_config import *
-#endregion import config from easyminercenter_api_config.py
+# endregion import config from easyminercenter_api_config.py
 
 # region config check
 if (API_URL.endswith('/')):
@@ -39,7 +39,8 @@ if (r.status_code != 200):
     quit()
 # endregion config check
 
-#region run test tasks and evaluate partial results
+# region run test tasks and evaluate partial results
+processed_datasets_count = 0
 # noinspection PyUnresolvedReferences
 for dataset in datasets:
     for i in range(0, 10):
@@ -61,8 +62,17 @@ for dataset in datasets:
         # region step 1: create datasource
         headers = {"Accept": "application/json"}
         print(API_URL + '/datasources?separator=%2C&encoding=utf8&type=limited&apiKey=' + API_KEY)
-        r = requests.post(API_URL + '/datasources?separator=%2C&encoding=utf8&type=limited&apiKey=' + API_KEY,
-                          files=files, headers=headers)
+        for createI in range(0,3):
+            r = requests.post(API_URL + '/datasources?separator=%2C&encoding=utf8&type=limited&apiKey=' + API_KEY,files=files, headers=headers)
+            if r.status_code==200 or r.status_code==201:
+                break
+            else:
+                print('--sleep [creation] -- ')
+                time.sleep(60)
+        if r.status_code>201:
+            print("Datasource evaluation failed, please try it again later: "+dataset["filename"]+str(i))
+            continue
+
         datasource_id = r.json()["id"]
         print("datasource_id:" + str(datasource_id))
         # endregion step 1: create datasource
@@ -147,7 +157,7 @@ for dataset in datasets:
             print("task_state:" + task_state["state"] + ", import_state:" + task_state["importState"])
             if task_state["state"] == "solved" and task_state["importState"] == "done":
                 break
-            if task_state == "failed" or task_state == "interrupted":
+            if task_state["state"] == "failed" or task_state["state"] == "interrupted":
                 print(dataset["filename"] + ": task failed executing")
                 break
 
@@ -156,10 +166,11 @@ for dataset in datasets:
         print("---prechod k evaluaci---")
 
         # region step 6: create datasource from test
-        r = requests.post(API_URL + '/datasources?separator=%2C&encoding=utf8&type=limited&apiKey=' + API_KEY, files={("file", open(test, 'rb'))}, headers={"Accept": "application/json"})
+        r = requests.post(API_URL + '/datasources?separator=%2C&encoding=utf8&type=limited&apiKey=' + API_KEY,
+                          files={("file", open(test, 'rb'))}, headers={"Accept": "application/json"})
         test_datasource_id = r.json()["id"]
         print("test datasource_id:" + str(test_datasource_id))
-        time.sleep(1)
+        time.sleep(5)
         # endregion step 6: create datasource from test
 
         # region step 7: evaluation
@@ -177,9 +188,16 @@ for dataset in datasets:
         output = open(prediction_file, "w")
         output.write(r.text)
         output.close()
-#endregion
+        if processed_datasets_count > 5:
+            # slowdown the evaluation script due to backend server load
+            print('--slow down--')
+            time.sleep(60)
+            processed_datasets_count = 0
+        else:
+            processed_datasets_count += 1
+# endregion
 
-#region process results CSV
+# region process results CSV
 resultsFile = directory + os.sep + "results" + os.sep + "_results.summary.csv"
 output = open(resultsFile, "w")
 output.write("dataset;AVG rule count;test rows;true positives;false positives;uncovered;AVG accuracy;AVG of accuracies\n");
@@ -207,7 +225,7 @@ for dataset in datasets:
         correct += dataCorrect
         incorrect += int(data["incorrect"])
         unclassified += int(data["unclassified"])
-        accuracyAvg+=(dataCorrect/dataRowCount)
+        accuracyAvg += (dataCorrect / dataRowCount)
 
     output.write(dataset["filename"] + ";"
                  + str(ruleCount / 10) + ";"
@@ -230,4 +248,4 @@ for dataset in datasets:
     datasetOutput.close()
 
 output.close()
-#endregion process results CSV
+# endregion process results CSV
