@@ -263,7 +263,7 @@ def process_results(output):
         datasetOutput.close()
 
 print("You can run multiple scripts in parallel to speed up processing.")
-print("Answering YES will delete any lock files and compute results when the script finishes.")
+print("Answering YES will delete any lock files and aggregate results when the API calls finish.")
 master = raw_input("Is this first (master) execution?")
 
 if master == "YES":
