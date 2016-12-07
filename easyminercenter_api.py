@@ -136,7 +136,8 @@ def api_call(train,test,dataset,fold,prediction_output_file):
     r = requests.get(API_URL + "/tasks/" + str(task_id) + "/start?apiKey=" + API_KEY, headers=headers)
     # task_id=r.json()["id"]
     while True:
-        time.sleep(1)
+        time.
+        (1)
         # check state
         r = requests.get(API_URL + "/tasks/" + str(task_id) + "/state?apiKey=" + API_KEY, headers=headers)
         task_state = r.json()
@@ -202,8 +203,9 @@ def train_and_test(output):
                 api_call(train,test,dataset,fold,prediction_output_file)
             except  Exception as inst:
                 print inst
-                print "Trying again (just once)"
+                print "Giving the API time to cool down and trying again (just once)"
                 try:
+                    time.sleep(2)
                     api_call(train,test,dataset,fold,prediction_output_file)
                 except  Exception as inst:
                     print inst
@@ -261,7 +263,6 @@ def process_results(output):
         datasetOutput.close()
 
 print("You can run multiple scripts in parallel to speed up processing.")
-print("You can run multiple scripts in parallel to speed up processing.")
 print("Answering YES will delete any lock files and compute results when the script finishes.")
 master = raw_input("Is this first (master) execution?")
 
@@ -274,7 +275,7 @@ if master == "YES":
 resultsFile = directory + os.sep + "results" + os.sep + "_results.summary.csv"
 output = open(resultsFile, "w")
 train_and_test(output)
-if master:
+if master == "YES":
     process_results(output)
 output.close()
 #endregion process results CSV
