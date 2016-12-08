@@ -27,6 +27,9 @@ IM_AUTO_CONF_SUPP_MAX_RULE_LENGTH = 5
 if os.path.isfile(os.curdir+os.sep+'easyminercenter_api_config.py'):
     # noinspection PyUnresolvedReferences
     from easyminercenter_api_config import *
+elif API_KEY == '' or API_URL == '':
+    print "You need to specify API_KEY and API_URL"
+    quit()
 #endregion import config from easyminercenter_api_config.py
 
 # region config check
@@ -136,8 +139,7 @@ def api_call(train,test,dataset,fold,prediction_output_file):
     r = requests.get(API_URL + "/tasks/" + str(task_id) + "/start?apiKey=" + API_KEY, headers=headers)
     # task_id=r.json()["id"]
     while True:
-        time.
-        (1)
+        time.sleep(1)
         # check state
         r = requests.get(API_URL + "/tasks/" + str(task_id) + "/state?apiKey=" + API_KEY, headers=headers)
         task_state = r.json()
@@ -262,20 +264,16 @@ def process_results(output):
         datasetOutput.write("Average of accuracies:" + str(accuracyAvg / 10) + "\n")
         datasetOutput.close()
 
-print("You can run multiple scripts in parallel to speed up processing.")
-print("Answering YES will delete any lock files and aggregate results when the API calls finish.")
-master = raw_input("Is this first (master) execution?")
-
-if master == "YES":
-    files = os.listdir(directory)
-    for lockfile in files:
-        if lockfile.endswith(".lock"):
-            os.remove(os.path.join(directory,lockfile))
 
 resultsFile = directory + os.sep + "results" + os.sep + "_results.summary.csv"
 output = open(resultsFile, "w")
 train_and_test(output)
-if master == "YES":
-    process_results(output)
+files = os.listdir(directory)
+#if there is any lock file quit
+for lockfile in files:
+    print "There are .lock files, quitting "
+    output.close()
+    quit()
+process_results(output)
 output.close()
 #endregion process results CSV
