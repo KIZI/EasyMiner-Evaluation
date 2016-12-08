@@ -62,6 +62,7 @@ def api_call(train,test,dataset,fold,prediction_output_file):
     print(API_URL + '/datasources?separator=%2C&encoding=utf8&type=limited&apiKey=' + API_KEY)
     r = requests.post(API_URL + '/datasources?separator=%2C&encoding=utf8&type=limited&apiKey=' + API_KEY,
                       files=files, headers=headers)
+    print ("response code:" + str(r.status_code))
     datasource_id = r.json()["id"]
     print("datasource_id:" + str(datasource_id))
     # endregion step 1: create datasource
@@ -242,16 +243,18 @@ def process_results(output):
             correct += dataCorrect
             incorrect += int(data["incorrect"])
             unclassified += int(data["unclassified"])
-            accuracyAvg+=(dataCorrect/dataRowCount)
-
+            accuracyAvg+=(float(dataCorrect)/dataRowCount)
+            print accuracyAvg
+        acc_micro=float(correct) / rowCount
+        acc_macro=float(accuracyAvg) / 10
         output.write(dataset["filename"] + ";"
                      + str(ruleCount / 10) + ";"
                      + str(rowCount) + ";"
                      + str(correct) + ";"
                      + str(incorrect) + ";"
                      + str(unclassified) + ";"
-                     + str(correct / rowCount) + ";"
-                     + str(accuracyAvg / 10)
+                     + str(acc_micro) + ";"
+                     + str(acc_macro)
                      + "\n")
 
         datasetOutput = open(datasetResultsFile, "w")
@@ -260,20 +263,22 @@ def process_results(output):
         datasetOutput.write("True positives:" + str(correct) + "\n")
         datasetOutput.write("False positives:" + str(incorrect) + "\n")
         datasetOutput.write("Uncovered:" + str(unclassified) + "\n\n")
-        datasetOutput.write("Accuracy (total):" + str(correct / rowCount) + "\n")
-        datasetOutput.write("Average of accuracies:" + str(accuracyAvg / 10) + "\n")
+        datasetOutput.write("Accuracy (micro):" + str(acc_micro) + "\n")
+        datasetOutput.write("Accuracy (macro):" + str(acc_macro) + "\n")
         datasetOutput.close()
 
 
-resultsFile = directory + os.sep + "results" + os.sep + "_results.summary.csv"
+resultsFile = directory + os.sep + "result_summary.csv"
 output = open(resultsFile, "w")
 train_and_test(output)
 files = os.listdir(directory)
 #if there is any lock file quit
 for lockfile in files:
-    print "There are .lock files, quitting "
-    output.close()
-    quit()
+    if lockfile.endswith(".lock"):
+        print "There are .lock files, quitting "
+        output.close()
+        quit()
 process_results(output)
 output.close()
+print "results written to:" + resultsFile
 #endregion process results CSV
