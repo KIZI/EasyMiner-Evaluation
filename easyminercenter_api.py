@@ -40,7 +40,13 @@ if (r.status_code != 200):
 # endregion config check
 
 # region remove current result files
+if os.path.isfile(directory + os.sep + "results" + os.sep + "_results.summary.csv"):
+    os.remove(directory + os.sep + "results" + os.sep + "_results.summary.csv")
+    print("removed file: " + "_results.summary.txt")
 for dataset in datasets:
+    if os.path.isfile(directory + os.sep + "results" + os.sep + dataset["filename"] + ".summary.txt"):
+        os.remove(directory + os.sep + "results" + os.sep + dataset["filename"] + ".summary.txt")
+        print("removed file: " + dataset["filename"] + ".summary.txt")
     for i in range(0, 10):
         if os.path.isfile(directory + os.sep + "results" + os.sep + dataset["filename"] + str(i) + ".evalResult.json"):
             os.remove(directory + os.sep + "results" + os.sep + dataset["filename"] + str(i) + ".evalResult.json")
