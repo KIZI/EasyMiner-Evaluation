@@ -127,9 +127,9 @@ def test_dataset (dataset, i):
 
     antecedent = []
     for col in df.columns:
-        if col == consequent:
-            continue
-        antecedent.append({"attribute": attributes_map[col]})
+        attribute_name = attributes_map[col]
+        if attribute_name != consequent:
+            antecedent.append({"attribute": attribute_name})
 
     task_config = {"miner": miner_id,
                    "name": "Test task", "limitHits": MAX_RULES_COUNT,
