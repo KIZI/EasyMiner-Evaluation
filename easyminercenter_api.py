@@ -223,8 +223,7 @@ print("--start evaluation--")
 
 # noinspection PyUnresolvedReferences
 for dataset in datasets:
-    for i in range(0, 2):
-        dataset_errors.append({"dataset": dataset, "i": i, "error_count": 0})
+    for i in range(0, 10):
         try:
             test_dataset(dataset, i)
         except Exception as e:
@@ -252,7 +251,7 @@ while len(dataset_errors)>0:
         continue
     try:
         print('run')
-        #test_dataset(dataset_error["dataset"], dataset_error["i"])
+        test_dataset(dataset_error["dataset"], dataset_error["i"])
         dataset_errors.pop(0)
     except Exception as e:
         print("ERROR: ")
