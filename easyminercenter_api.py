@@ -28,7 +28,7 @@ if os.path.isfile(os.curdir+os.sep+'easyminercenter_api_config.py'):
     # noinspection PyUnresolvedReferences
     from easyminercenter_api_config import *
 elif API_KEY == '' or API_URL == '':
-    print "You need to specify API_KEY and API_URL"
+    print ("You need to specify API_KEY and API_URL")
     quit()
 #endregion import config from easyminercenter_api_config.py
 
@@ -36,9 +36,12 @@ elif API_KEY == '' or API_URL == '':
 if (API_URL.endswith('/')):
     API_URL.rstrip('/')
 
-r = requests.get(API_URL + '/auth?apiKey=' + API_KEY)
+check_url = API_URL + '/auth?apiKey=' + API_KEY
+r = requests.get(check_url)
 if (r.status_code != 200):
     print("You have to input valid API_KEY and URL of the EasyMinerCenter API endpoint!")
+    print(check_url)
+    print(r.status_code)
     quit()
 # endregion config check
 
@@ -217,7 +220,7 @@ def train_and_test(output):
                     raise
             delete_lock(lock_file)
     #region process results CSV
-    output.write("dataset;AVG rule count;test rows;true positives;false positives;uncovered;AVG accuracy;AVG of accuracies\n");
+    output.write("dataset;AVG rule count;test rows;true positives;false positives;uncovered;micro accuracy;macro accuracy\n");
 
 def process_results(output):
     # noinspection PyUnresolvedReferences
@@ -244,7 +247,6 @@ def process_results(output):
             incorrect += int(data["incorrect"])
             unclassified += int(data["unclassified"])
             accuracyAvg+=(float(dataCorrect)/dataRowCount)
-            print accuracyAvg
         acc_micro=float(correct) / rowCount
         acc_macro=float(accuracyAvg) / 10
         output.write(dataset["filename"] + ";"
