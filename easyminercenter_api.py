@@ -301,7 +301,7 @@ for lockfile in files:
         print ("There are the following .lock files: ")
         print (lockfile)
 resultsFile = directory + os.sep + "result_summary.csv"
-
+os.remove(resultsFile)
 process_results(resultsFile)
 print "results written to:" + resultsFile
 #endregion process results CSV
