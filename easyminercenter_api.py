@@ -98,9 +98,9 @@ def api_call(train,test,dataset,fold,prediction_output_file):
 
     antecedent = []
     for col in df.columns:
-        if col == consequent:
-            continue
-        antecedent.append({"attribute": attributesMap[col]})
+        attribute_name = attributesMap[col]
+        if attribute_name != consequent:
+            antecedent.append({"attribute": attribute_name})
 
     task_config = {"miner": miner_id,
                    "name": "Test task", "limitHits": MAX_RULES_COUNT,
