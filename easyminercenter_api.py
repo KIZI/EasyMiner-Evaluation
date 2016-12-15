@@ -1,3 +1,4 @@
+from multiprocessing import Process
 import requests, json
 import pandas as pd
 import time
@@ -13,6 +14,7 @@ directory = os.getcwd()
 API_KEY = ''
 API_URL = ''
 
+PARALLEL_THREADS=5
 # region TASK CONFIG
 AUTO_CONF_SUPP = False
 USE_CBA = True
@@ -182,7 +184,7 @@ def api_call(train,test,dataset,fold,prediction_output_file):
     pred_output.close()
 #endregion
 
-def train_and_test(output):
+def train_and_test():
     #region run test tasks and evaluate partial results
     # noinspection PyUnresolvedReferences
     for dataset in datasets:
@@ -220,9 +222,11 @@ def train_and_test(output):
                     raise
             delete_lock(lock_file)
     #region process results CSV
-    output.write("dataset;AVG rule count;test rows;true positives;false positives;uncovered;micro accuracy;macro accuracy\n");
 
-def process_results(output):
+
+def process_results(resultsFile):
+    output = open(resultsFile, "w")
+    output.write("dataset;AVG rule count;test rows;true positives;false positives;uncovered;micro accuracy;macro accuracy\n");
     # noinspection PyUnresolvedReferences
     for dataset in datasets:
         ruleCount = 0
@@ -233,7 +237,10 @@ def process_results(output):
         accuracyAvg = 0
 
         datasetResultsFile = directory + os.sep + "results" + os.sep + dataset["filename"] + ".summary.txt"
-
+        for i in range(0, 10):
+            if not os.path.isfile(directory + os.sep + "results" + os.sep + dataset["filename"] + str(i) + ".evalResult.json"):
+                print("SKIPPED ROW: "+dataset["filename"])
+                continue
         for i in range(0, 10):
             jsonDataFile = open(
                 directory + os.sep + "results" + os.sep + dataset["filename"] + str(i) + ".evalResult.json", "r")
@@ -268,19 +275,33 @@ def process_results(output):
         datasetOutput.write("Accuracy (micro):" + str(acc_micro) + "\n")
         datasetOutput.write("Accuracy (macro):" + str(acc_macro) + "\n")
         datasetOutput.close()
+        output.close()
 
 
-resultsFile = directory + os.sep + "result_summary.csv"
-output = open(resultsFile, "w")
-train_and_test(output)
+
+
+print("Deleting previously computed result files")
+for result_file in os.listdir(directory + os.sep + "results"):
+    os.remove(directory + os.sep + "results" + os.sep + result_file)
+
+if __name__ == '__main__':
+    processes = []
+    for i in range(0,PARALLEL_THREADS):
+        p = Process(target=train_and_test)
+        p.start()
+        print("started process " + str(i))
+        processes.append(p)
+    for p in processes:
+        p.join()
+
+#warn if any result computation hanged
 files = os.listdir(directory)
-#if there is any lock file quit
 for lockfile in files:
     if lockfile.endswith(".lock"):
-        print "There are .lock files, quitting "
-        output.close()
-        quit()
-process_results(output)
-output.close()
+        print ("There are the following .lock files: ")
+        print (lockfile)
+resultsFile = directory + os.sep + "result_summary.csv"
+
+process_results(resultsFile)
 print "results written to:" + resultsFile
 #endregion process results CSV
