@@ -6,7 +6,7 @@ This repository contains prepared evaluation datasets and evaluation scripts for
 Example code in case you want to run evaluation on the same docker server as data mining services of [EasyMiner](http://github.com/kizi/easyminer).
 
 ```bash
-docker build https://github.com/docker/rootfs.git#container:docker
+docker build https://github.com/kizi/easyminer-evaluation.git#master:docker
 docker run --name easyminer-evaluation -it  --network easyminer easyminer-evaluation /bin/bash
 ```
     
