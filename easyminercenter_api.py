@@ -210,7 +210,9 @@ def test_dataset (dataset, i):
 
     # save classification result to prediction_file
     output = open(prediction_file, "w")
-    output.write(r.text)
+    rJson = r.json()
+    rJson['test_datasource_id']=test_datasource_id
+    output.write(json.dumps(rJson))
     output.close()
 
 
@@ -220,7 +222,7 @@ def slowdown_counter():
     if processed_datasets_count > 10:
         # slowdown the evaluation script due to backend server load
         print('--slow down--')
-        time.sleep(20)
+        time.sleep(10)
         processed_datasets_count = 0
     else:
         processed_datasets_count += 1
