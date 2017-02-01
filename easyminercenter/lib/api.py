@@ -3,7 +3,7 @@ import os
 import requests
 import json
 import time
-from ...data.datasets import *
+from data.datasets import *
 
 
 class Api:
