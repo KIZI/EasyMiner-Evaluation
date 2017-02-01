@@ -47,7 +47,8 @@ DATASETS = [
 
 def get_all():
     datasets = DATASETS
-    return datasets.sort(key=lambda x: x['name'].lower())
+    return datasets
+    #return datasets.sort(key=lambda x: x['name'].lower())
 
 def get_filename(name: str, fold: int, type: str):
     """ Function returning filename of the file with required dataset

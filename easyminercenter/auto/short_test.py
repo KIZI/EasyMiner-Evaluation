@@ -2,10 +2,10 @@ from easyminercenter.config import *
 from data import datasets
 from easyminercenter.lib.api import *
 from random import randrange
-
 import logging
 
 API_URL = API_URL #TODO dynamické přiřazení adresy
+USE_AUTO_CONF_SUPP = False
 
 
 datasets_list = datasets.get_all()
@@ -35,13 +35,17 @@ for dataset in datasets_list:
             # create and run task
             task_id = api.create_task(miner_id=miner_id, attributes_map=attributes_map, max_rules_count=80000,
                                       use_cba=True,
-                                      auto_conf_supp=False, im_conf=0.5, im_supp=0.01)
+                                      auto_conf_supp=USE_AUTO_CONF_SUPP, im_conf=0.5, im_supp=0.01, target_column_name=dataset['target_variable'])
             api.run_task(task_id)
 
             # create test datasource and run scorer
             test_datasource_id = api.create_datasource(dataset_name, fold_id, TYPE_TEST)
             scorer_result = api.run_scorer(task_id, test_datasource_id)
 
+            #zde je možné logovat výsledky
+
+            logging.debug('TEST FINISHED SUCCESFULLY: ' + dataset_name + str(fold_id))
+            break
         except Exception as e:
             if repeat_count>0:
                 logging.exception(e)

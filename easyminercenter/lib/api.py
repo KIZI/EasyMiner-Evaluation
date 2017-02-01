@@ -21,12 +21,15 @@ class Api:
         Funkce pro registraci nového uživatele
         """
         headers = {'Content-Type': 'application/json', "Accept": "application/json"}
-        user_data = {}
+        testname='testuser' + str(time.time())
+        user_data = { 'name': testname, 'email': testname + '@domain.tld', 'password': testname}
+
         r = requests.post(self.api_url + '/users?apiKey=' + self.api_key, headers = headers, data = json.dumps(user_data).encode())
         if r.status_code == 201:
             json_data = r.json()
             self.api_key = json_data['apiKey']
-            logging.debug('Registered user: ' + json_data['id'])
+            time.sleep(5)
+            logging.debug('Registered user: ' + str(json_data['id']))
         else:
             logging.error('User creation failed: ' + r.text)
             raise Exception('User creation failed.')
@@ -50,20 +53,22 @@ class Api:
         :param dataset_type: str
         :return: int
         """
-        headers = {"Accept": "application/json"}
-        filename = get_filename(dataset_name,dataset_fold,dataset_type)
-        if not os.path.isfile(filename):
-            logging.error('File not exists: ' + filename)
-            raise Exception("Dataset file not found: " + filename)
-        files = {("file", open(filename, 'rb'))}
-
+        file = get_filename(dataset_name, dataset_fold, dataset_type)
+        if not os.path.isfile(file):
+            logging.error('File not exists: ' + file)
+            raise Exception("Dataset file not found: " + file)
+        files = {("file", open(file, 'rb'))}
         datasource_id = -1
+        headers = {"Accept": "application/json"}
 
         for createI in range(0, 3):
             r = requests.post(self.api_url + '/datasources?separator=%2C&encoding=utf8&type=limited&apiKey=' + self.api_key,
                               files=files, headers=headers)
             if r.status_code == 200 or r.status_code == 201:
                 datasource_id = r.json()["id"]
+                if datasource_id:
+                    logging.debug("Dataset created (dataset_name + " " + str(dataset_fold) + " " + dataset_type): " + str(datasource_id))
+                    return datasource_id
             else:
                 if createI >= 2:
                     raise Exception("Datasource creation failed: " + dataset_name + " " + str(dataset_fold) + " " + dataset_type)
@@ -71,11 +76,7 @@ class Api:
                     logging.debug('Dataset creation failed, repeat it: ' + dataset_name + " " + str(dataset_fold) + " " + dataset_type)
                     time.sleep(10)
 
-        if datasource_id > -1:
-            logging.debug("Dataset created (dataset_name + " " + str(dataset_fold) + " " + dataset_type): " + datasource_id)
-            return datasource_id
-        else:
-            raise Exception("Dataset creation failed (dataset_name + " " + str(dataset_fold) + " " + dataset_type): " + datasource_id)
+        raise Exception('Miner creation failed')
 
     def create_miner(self, datasource_id : int, miner_name: str = "test miner"):
         """
@@ -89,9 +90,11 @@ class Api:
         json_data = json.dumps(json_data).encode()
         r = requests.post(self.api_url + "/miners?apiKey=" + self.api_key, headers=headers, data=json_data)
         miner_id = r.json()["id"]
-        logging.debug('Miner created: '+miner_id)
+        logging.debug('Miner created: '+str(miner_id))
         if not miner_id:
             raise Exception('Miner creation failed.')
+        else:
+            return miner_id
 
     def preprocess_fields_each_one(self, miner_id : int):
         attributes_map = {}
@@ -103,19 +106,20 @@ class Api:
 
         r = requests.get(self.api_url + '/datasources/' + str(datasource_id) +  '?apiKey=' + self.api_key, headers = headers)
         if r.status_code != 200:
-            raise Exception("Datasource for miner " + str(miner_id) + " not found: " + datasource_id)
+            raise Exception("Datasource for miner " + str(miner_id) + " not found: " + str(datasource_id))
 
         datasource_data = r.json()
         headers = {'Content-Type': 'application/json', "Accept": "application/json"}
         for column in datasource_data['column']:
             #zpracujeme jednotlive sloupce
-            json_data = {'miner':miner_id, 'name': column['name'], 'specialPreprocessing': 'eachOne'}
+            json_data = {'miner':miner_id, 'name': column['name'], 'columnName': column['name'], 'specialPreprocessing': 'eachOne'}
             json_data = json.dumps(json_data).encode()
 
             r = requests.post(self.api_url + '/attributes?apiKey=' + self.api_key, headers = headers, data = json_data)
-            logging.debug('attribute creation: ' + column['name'] + ' - ' + r.status_code)
-            if (r.status_code != 201):
-                raise Exception("Attribute creation failed: miner_id=" + str(miner_id) + ", column=" + column['name'] + ', status='+r.status_code)
+            logging.debug('attribute creation: ' + column['name'] + ' - ' + str(r.status_code))
+            if r.status_code != 201:
+                print(r.text)
+                raise Exception("Attribute creation failed: miner_id=" + str(miner_id) + ", column=" + column['name'] + ', status=' + str(r.status_code))
             attributes_map[column['name']] = r.json()['name']
 
         return attributes_map
@@ -192,12 +196,12 @@ class Api:
             # check state
             r = requests.get(self.api_url + "/tasks/" + str(task_id) + "/state?apiKey=" + self.api_key, headers=headers)
             task_state = r.json()
-            logging.debug("task " + task_id + " --- state: " + task_state["state"] + ", import_state:" + task_state["importState"])
+            logging.debug("task " + str(task_id) + " --- state: " + task_state["state"] + ", import_state:" + task_state["importState"])
             if task_state["state"] == "solved" and task_state["importState"] == "done":
-                logging.debug('Task solved: ' + task_id)
+                logging.debug('Task solved: ' + str(task_id))
                 break
             if task_state["state"] == "failed" or task_state["state"] == "interrupted":
-                raise Exception("Task run failed: " + task_id)
+                raise Exception("Task run failed: " + str(task_id))
 
     def run_scorer(self, task_id : str, test_datasource_id : str):
         """
@@ -209,3 +213,4 @@ class Api:
         uri = self.api_url + "/evaluation/classification?scorer=easyMinerScorer&task=" + str(task_id) + "&datasource=" + str(test_datasource_id) + "&apiKey=" + self.api_key
         logging.debug("evaluation uri:" + uri)
         r = requests.get(uri, headers={"Accept": "application/json"})
+        return r.json()

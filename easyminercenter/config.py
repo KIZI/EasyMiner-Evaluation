@@ -1,1 +1,1 @@
-API_URL = 'http://xtest.lmcloud.vse.cz/easyminercenter/api'
+API_URL = 'https://br-dev.lmcloud.vse.cz/easyminercenter/api'
