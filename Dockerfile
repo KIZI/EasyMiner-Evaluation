@@ -8,7 +8,6 @@ RUN pip install pandas && \
     pip install requests
 
 ADD / /easyminer-evaluation
-ADD /docker/easyminercenter_api_config.py /easyminer-evaluation
 
 WORKDIR /easyminer-evaluation
 

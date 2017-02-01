@@ -1,15 +1,41 @@
-from easyminercenter.config import *
 from data import datasets
 from easyminercenter.lib.api import *
 from random import randrange
 import logging
+import sys
+import getopt
 
-API_URL = API_URL #TODO dynamické přiřazení adresy
+API_URL = ''
+API_KEY = ''
 USE_AUTO_CONF_SUPP = False
 
+#region params
+try:
+    opts, args = getopt.getopt(sys.argv[1:], "", ["auto_conf_supp", "api_key="])
+except getopt.GetoptError as err:
+    # print help information and exit:
+    print(str(err))  # will print something like "option -a not recognized"
+    sys.exit(2)
+
+for option, value in opts:
+    if option == "--auto_conf_supp":
+        if value=="" or value==1:
+            USE_AUTO_CONF_SUPP = True
+    elif option == "--api_key":
+        API_KEY=value
+    elif option == "--api_url":
+        API_URL=value
+#endregion params
+
+
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 datasets_list = datasets.get_all()
-api = Api(API_URL)
+
+if API_KEY:
+    api = Api(API_URL, API_URL)
+else:
+    api = Api(API_URL)
 
 #registrace noveho uzivatele a kontrola nastaveni pristupu
 api.register_new_user()
