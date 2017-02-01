@@ -1,5 +1,5 @@
-from data import datasets
-from easyminercenter.lib.api import *
+from ...data import datasets
+from ..lib.api import *
 from random import randrange
 import logging
 import sys
