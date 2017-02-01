@@ -11,7 +11,7 @@ USE_AUTO_CONF_SUPP = False
 
 #region params
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "", ["auto_conf_supp", "api_key="])
+    opts, args = getopt.getopt(sys.argv[1:], "", ["auto_conf_supp", "api_key=", "api_url="])
 except getopt.GetoptError as err:
     # print help information and exit:
     print(str(err))  # will print something like "option -a not recognized"
