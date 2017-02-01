@@ -1,0 +1,1 @@
+API_URL = 'http://xtest.lmcloud.vse.cz/easyminercenter/api'
