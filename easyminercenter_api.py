@@ -59,9 +59,9 @@ processed_datasets_count = 0
 
 def test_dataset (dataset, i):
     """This function runs evaluation for one dataset"""
-    train = directory + os.sep + "folds" + os.sep + "train" + os.sep + dataset["filename"] + str(i) + ".csv"
+    train = directory + os.sep + "data" + os.sep + "train" + os.sep + dataset["filename"] + str(i) + ".csv"
     print(train)
-    test = directory + os.sep + "folds" + os.sep + "test" + os.sep + dataset["filename"] + str(i) + ".csv"
+    test = directory + os.sep + "data" + os.sep + "test" + os.sep + dataset["filename"] + str(i) + ".csv"
 
     if not (os.path.isfile(train) and os.path.isfile(test)):
         # train or test CSV file is not available
