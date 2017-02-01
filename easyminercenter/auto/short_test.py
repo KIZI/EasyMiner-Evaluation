@@ -28,7 +28,7 @@ for option, value in opts:
 #endregion params
 
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 datasets_list = datasets.get_all()
 
@@ -71,7 +71,7 @@ for dataset in datasets_list:
 
             #zde je možné logovat výsledky
 
-            logging.debug('TEST FINISHED SUCCESFULLY: ' + dataset_name + str(fold_id))
+            logging.info('TEST FINISHED SUCCESFULLY: ' + dataset_name + str(fold_id))
             break
         except Exception as e:
             if repeat_count>0:
