@@ -9,6 +9,8 @@ RUN pip install pandas && \
 
 ADD / /easyminer-evaluation
 
+ENV PYTHONPATH $PYTHONPATH:/easyminer-evaluation/easyminercenter:/easyminer-evaluation/data
+
 WORKDIR /easyminer-evaluation
 
 #CMD [ "python", "./easyminercenter_api.py" ]
