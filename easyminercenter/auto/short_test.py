@@ -33,12 +33,13 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s 
 datasets_list = datasets.get_all()
 
 if API_KEY:
-    api = Api(API_URL, API_URL)
+    api = Api(API_URL, API_KEY)
 else:
     api = Api(API_URL)
+    #registrace noveho uzivatele
+    api.register_new_user()
 
-#registrace noveho uzivatele a kontrola nastaveni pristupu
-api.register_new_user()
+#kontrola nastaveni pristupu
 api.check_user_access()
 
 for dataset in datasets_list:
