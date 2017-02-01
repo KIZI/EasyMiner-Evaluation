@@ -207,10 +207,12 @@ def test_dataset (dataset, i):
     prediction_file = directory + os.sep + "results" + os.sep + dataset["filename"] + str(i) + ".evalResult.json"
 
     print("response status:" + str(r.status_code))
+    rJson = r.json()
+    if str(r.status_code) != "200" or not ("correct" in rJson):
+        raise Exception(dataset["filename"] + ": Scorer creation or run failed.")
 
     # save classification result to prediction_file
     output = open(prediction_file, "w")
-    rJson = r.json()
     rJson['test_datasource_id']=test_datasource_id
     output.write(json.dumps(rJson))
     output.close()
@@ -238,7 +240,7 @@ for dataset in datasets:
             dataset_errors.append({"dataset":dataset, "i":i, "error_count":0})
             print("ERROR: ")
             print(e.args)
-            time.sleep(60)
+            time.sleep(10)
 
         slowdown_counter()
 
@@ -248,7 +250,7 @@ print(dataset_errors)
 
 while len(dataset_errors)>0:
     print("--process errors--")
-    time.sleep(60)
+    time.sleep(10)
     dataset_error = dataset_errors[0]
     dataset_error["error_count"] += 1
 
