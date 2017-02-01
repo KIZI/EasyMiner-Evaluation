@@ -16,6 +16,11 @@ For EasyMiner state test, and then run the container using command (with replace
 HTTP_SERVER_ADDR=<docker-server>
 docker run -it --network easyminer easyminer-evaluation python ./easyminercenter/auto/short_test.py --api_url=http://$HTTP_SERVER_ADDR/easyminercenter/api
 ```     
+
+If you have used the default docker image names defined in the repository [kizi/EasyMiner](https://github.com/KIZI/EasyMiner), the run command is:
+```bash
+docker run -it --network easyminer easyminer-evaluation python ./easyminercenter/auto/short_test.py --api_url=http://easyminer-frontend/easyminercenter/api
+```     
     
 In docker image interactive mode, you can find all requested scripts and results in the folder ```/easyminer-evaluation```.
 Do not forget to input your API KEY generated in the EasyMiner frontend! 
