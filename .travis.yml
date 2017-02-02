@@ -5,7 +5,7 @@ services:
   - docker
 
 install:
-  - HTTP_SERVER_ADDR=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
+  - HTTP_SERVER_ADDR=$(ip route get 8.8.8.8 | awk '/8.8.8.8/ {print $NF}')
   - echo $HTTP_SERVER_ADDR
   - docker network create easyminer
   - docker pull mariadb:10
