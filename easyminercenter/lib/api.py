@@ -68,7 +68,7 @@ class Api:
             if r.status_code == 200 or r.status_code == 201:
                 datasource_id = r.json()["id"]
                 if datasource_id:
-                    logging.info("Dataset created (dataset_name + " " + str(dataset_fold) + " " + dataset_type): " + str(datasource_id))
+                    logging.info("Dataset created (" + dataset_name + " " + str(dataset_fold) + " " + dataset_type + "): " + str(datasource_id))
                     return datasource_id
             else:
                 if createI >= 2:
