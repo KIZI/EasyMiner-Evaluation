@@ -8,10 +8,11 @@ import getopt
 API_URL = ''
 API_KEY = ''
 USE_AUTO_CONF_SUPP = False
+RANDOM_FOLDS = False
 
 #region params
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "", ["auto_conf_supp", "api_key=", "api_url="])
+    opts, args = getopt.getopt(sys.argv[1:], "", ["auto_conf_supp", "api_key=", "api_url=", "random_folds"])
 except getopt.GetoptError as err:
     # print help information and exit:
     print(str(err))  # will print something like "option -a not recognized"
@@ -19,12 +20,15 @@ except getopt.GetoptError as err:
 
 for option, value in opts:
     if option == "--auto_conf_supp":
-        if value=="" or value==1:
+        if value == "" or value == 1 or value == "=1":
             USE_AUTO_CONF_SUPP = True
     elif option == "--api_key":
         API_KEY=value
     elif option == "--api_url":
         API_URL=value
+    elif option == "random_folds":
+        if value == "" or value == 1 or value == "=1":
+            RANDOM_FOLDS = True
 #endregion params
 
 
@@ -43,7 +47,10 @@ else:
 api.check_user_access()
 
 for dataset in datasets_list:
-    fold_id = randrange(0, 9, 1)
+    if RANDOM_FOLDS:
+        fold_id = randrange(0, 9, 1)
+    else:
+        fold_id = 1
     dataset_name = dataset['name']
     target_variable = dataset['target_variable']
 
@@ -69,7 +76,13 @@ for dataset in datasets_list:
             test_datasource_id = api.create_datasource(dataset_name, fold_id, TYPE_TEST)
             scorer_result = api.run_scorer(task_id, test_datasource_id)
 
-            #zde je možné logovat výsledky
+            # kontrola toho, zda nejsou vraceny jen nulove hodnoty
+            if int(scorer_result["correct"]) > 0 and int(scorer_result["rowCount"]) > 0:
+                logging.info("Accuracy: " + str(int(scorer_result["correct"])/int(scorer_result["rowCount"])))
+            else:
+                raise Exception("Invalid scorer values, or accuracy is null!")
+
+            #zde je mozne logovat vysledky
 
             logging.info('TEST FINISHED SUCCESFULLY: ' + dataset_name + str(fold_id))
             break
