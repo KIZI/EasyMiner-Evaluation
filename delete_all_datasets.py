@@ -1,8 +1,8 @@
 import requests, json, os
 
-API_KEY = ''
-DATA_API_URL = 'http://br-dev.lmcloud.vse.cz/easyminer-data/api/v1'
-PREPROCESSING_API_URL = 'http://br-dev.lmcloud.vse.cz/easyminer-preprocessing/api/v1'
+API_KEY = 'h4c2JX18040ylgb7YJrUwV8cwF85742ydyccTrHcZO61nUqz0rx'
+DATA_API_URL = 'http://xtest.lmcloud.vse.cz/easyminer-data/api/v1'
+PREPROCESSING_API_URL = 'http://xtest.lmcloud.vse.cz/easyminer-preprocessing/api/v1'
 
 # region import config from easyminercenter_api_config.py
 if os.path.isfile(os.curdir + os.sep + 'easyminercenter_api_config.py'):

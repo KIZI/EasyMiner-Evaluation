@@ -125,7 +125,7 @@ class Api:
 
         return attributes_map
 
-    def create_task(self, miner_id : int, attributes_map, target_column_name : str, max_rules_count : int = 80000, use_cba : bool = True, auto_conf_supp : bool = False, im_auto_conf_supp_max_rule_length : int = 5, im_conf : float = 0.5, im_supp : float = 0.01 ):
+    def create_task(self, miner_id : int, attributes_map, target_column_name : str, max_rules_count : int = 80000, use_cba : bool = True, auto_conf_supp : bool = False, im_auto_conf_supp_max_rule_length : int = 5, im_conf : float = 0.5, im_supp : float = 0.01 , max_rule_length : int = 0):
         """
         Funkce pro vytvoreni jednoduche data miningove ulohy na zaklade vstupnich parametru
         :param miner_id:
@@ -137,6 +137,7 @@ class Api:
         :param im_auto_conf_supp_max_rule_length:
         :param im_conf:
         :param im_supp:
+        :param max_rule_length: max. pocet atributu v pravidle (0=automaticky)
         :return:
         """
         headers = {'Content-Type': 'application/json', "Accept": "application/json"}
@@ -163,10 +164,15 @@ class Api:
 
         if auto_conf_supp:
             task_config['IMs'].append({"name": "AUTO_CONF_SUPP"})
-            task_config['IMs'].append({"name": "RULE_LENGTH", "value": im_auto_conf_supp_max_rule_length})
+            if max_rule_length>0:
+                task_config['IMs'].append({"name": "RULE_LENGTH", "value": max_rule_length})
+            else:
+                task_config['IMs'].append({"name": "RULE_LENGTH", "value": im_auto_conf_supp_max_rule_length})
         else:
             task_config['IMs'].append({"name": "CONF", "value": im_conf})
             task_config['IMs'].append({"name": "SUPP", "value": im_supp})
+            if max_rule_length>0:
+                task_config['IMs'].append({"name": "RULE_LENGTH", "value": max_rule_length})
 
         if use_cba:
             task_config["specialIMs"].append({"name": "CBA"})
