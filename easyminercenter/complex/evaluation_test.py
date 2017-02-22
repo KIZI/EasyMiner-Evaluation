@@ -4,11 +4,13 @@ import logging
 import sys
 import getopt
 
+logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 API_URL = ''
 API_KEY = ''
 USE_AUTO_CONF_SUPP = False
 USE_CBA = False
-MAX_RULES_COUNT = 80000
+MAX_RULES_COUNT = 10000
 MIN_CONFIDENCE = 0.5
 MIN_SUPPORT = 0.01
 MAX_RULE_LENGTH = 0
@@ -93,8 +95,6 @@ if not os.path.isdir(RESULTS_DIRECTORY):
 
 logging.info("RESULTS DIRECTORY: " + os.path.realpath(RESULTS_DIRECTORY))
 # endregion check if results directory is writable
-
-logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 datasets_list = datasets.get_all()
 
@@ -220,6 +220,7 @@ for dataset in datasets_list:
 
 # region zpracovani vysledku
 output_csv_file=open(get_results_filename(dataset_name="_results",file_type=".summary.csv"),"w")
+output_csv_file.write("dataset;AVG rule count;test rows;true positives;false positives;uncovered;AVG accuracy;AVG of accuracies\n");
 output_results = {}
 
 for dataset in datasets_list:
@@ -268,7 +269,7 @@ for dataset in datasets_list:
 
 
     output_results[dataset_name] = {
-        "rule_count": rule_count,
+        "avg_rule_count": rule_count,
         "row_count": row_count,
         "correct": correct,
         "incorrect": incorrect,
@@ -282,5 +283,5 @@ output_json_file = open(get_results_filename(dataset_name="_results",file_type="
 output_json_file.write(json.dumps(output_results))
 output_json_file.close()
 
-logging.info('EVALUATION FINISHED')
+logging.info('EVALUATION FINISHED - result are in: ' + os.path.realpath(RESULTS_DIRECTORY))
 # endregion zpracovani vysledku
