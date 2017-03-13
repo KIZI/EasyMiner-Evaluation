@@ -17,7 +17,9 @@ docker run --name easyminer-evaluation -it --network easyminer easyminer-evaluat
 
 ## Integration test ("Short test")
 
-[Short test](./easyminercenter/auto) is  a build a verification test on a set of evaluation datasets. This test will fail if any of the datasets does not go through the complete classification workflow (data upload, preprocessing, classifier building, application of the classifier). This test can be considered as smoke test as it does not check whether the reported evaluation accuracy is within a certain range.
+[Short test](./easyminercenter/auto) is  a build a verification test on a set of evaluation datasets. 
+Only one fold from each dataset is used and the results are not saved.
+This test will fail if any of the datasets does not go through the complete classification workflow (data upload, preprocessing, classifier building, application of the classifier). This test can be considered as smoke test as it does not check whether the reported evaluation accuracy is within a certain range.
 
 
 ### Default installation
@@ -44,8 +46,9 @@ More information on the [parameters](./easyminercenter/complex).
 HTTP_SERVER_ADDR=<docker-server>
 docker run -it --network easyminer easyminer-evaluation python ./easyminercenter/auto/short_test.py --api_url=http://$HTTP_SERVER_ADDR/easyminercenter/api
 ```     
-## Benchmark ("Complex test")
+## Internal Benchmark ("Complex test")
 The [Complex test](./easyminercenter/complex) tests writes evaluation results (accuracy, rule count) for each dataset into the `/easyminer-evaluation/results` folder.
+ 
  
 ### Default installation
 
@@ -60,9 +63,8 @@ docker cp <container id>:///easyminer-evaluation/results .
 
 where containedid can be retrieved with `docker ps --all`
 
-## Dependencies
-
-The evaluation datasets were created using [marcbench](https://github.com/kliegr/marcbench)  with discretization.
+## External Benchmark
+A benchmarking suite involving also other classification algorithms is located in standalone project  [EasyMiner Bechmark](https://github.com/KIZI/EasyMiner-Benchmark). 
 
 
     
