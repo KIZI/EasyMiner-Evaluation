@@ -15,7 +15,7 @@ In order to manually run the python evaluation script, you need to login to the 
 docker run --name easyminer-evaluation -it --network easyminer easyminer-evaluation /bin/bash
 ```
 
-## Integration test ("short test")
+## Integration test ("Short test")
 
 [Short test](./easyminercenter/auto) is  a build a verification test on a set of evaluation datasets. This test will fail if any of the datasets does not go through the complete classification workflow (data upload, preprocessing, classifier building, application of the classifier). This test can be considered as smoke test as it does not check whether the reported evaluation accuracy is within a certain range.
 
@@ -44,14 +44,13 @@ More information on the [parameters](./easyminercenter/complex).
 HTTP_SERVER_ADDR=<docker-server>
 docker run -it --network easyminer easyminer-evaluation python ./easyminercenter/auto/short_test.py --api_url=http://$HTTP_SERVER_ADDR/easyminercenter/api
 ```     
-## Benchmark ("Evaluation test")
+## Benchmark ("Complex test")
 The [Evaluation test](./easyminercenter/complex) tests writes evaluation results (accuracy, rule count) for each dataset into the `/easyminer-evaluation/results` folder.
  
 ### Default installation
 
 ```bash
-# Default run of base integration test of EasyMiner server installed using docker images 
-docker run -it --network easyminer easyminer-evaluation python ./easyminercenter/complex/evaluation_test.py --api_url=http://easyminer-frontend/easyminercenter/api
+docker run -it --network easyminer easyminer-evaluation python ./easyminercenter/complex/evaluation_test.py --api_url=http://easyminer-frontend/easyminercenter/api --cba --max_rules_count=80000
 ```
 
 ## Dependencies
