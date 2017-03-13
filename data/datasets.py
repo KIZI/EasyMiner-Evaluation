@@ -4,12 +4,9 @@ TYPE_TRAIN = 'train'
 TYPE_TEST = 'test'
 DATASETS = [
     {"name": "anneal", "target_variable": "class"},
-    {"name": "australian", "target_variable": "Y"},
-    {"name": "heart-h", "target_variable": "num"},
+    {"name": "australian", "target_variable": "Y"},    
     {"name": "heart-statlog", "target_variable": "class"},
     {"name": "kr-vs-kp", "target_variable": "class"},
-    {"name": "heart-c", "target_variable": "num"},
-    {"name": "pima", "target_variable": "class"},
     {"name": "tic-tac-toe", "target_variable": "Class"},
     {"name": "audiology", "target_variable": "class"},
     {"name": "balance-scale", "target_variable": "class"},
@@ -36,7 +33,6 @@ DATASETS = [
     {"name": "labor", "target_variable": "class"},
     {"name": "letter", "target_variable": "class"},
     {"name": "lymph", "target_variable": "class"},
-    {"name": "sick", "target_variable": "Class"},
     {"name": "sonar", "target_variable": "Class"},
     {"name": "vehicle", "target_variable": "Class"},
     {"name": "segment", "target_variable": "class"},
