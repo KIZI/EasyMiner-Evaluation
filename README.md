@@ -45,7 +45,7 @@ HTTP_SERVER_ADDR=<docker-server>
 docker run -it --network easyminer easyminer-evaluation python ./easyminercenter/auto/short_test.py --api_url=http://$HTTP_SERVER_ADDR/easyminercenter/api
 ```     
 ## Benchmark ("Evaluation test")
-The [Evaluation test](./easyminercenter/complex) tests writes evaluation results (accuracy, rule count) for each dataset into the `output` folder.
+The [Evaluation test](./easyminercenter/complex) tests writes evaluation results (accuracy, rule count) for each dataset into the `/easyminer-evaluation/results` folder.
  
 ### Default installation
 
