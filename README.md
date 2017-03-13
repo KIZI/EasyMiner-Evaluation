@@ -55,7 +55,7 @@ docker run -it --network easyminer easyminer-evaluation python ./easyminercenter
 
 After the test has finished, you can copy test results from the stopped container to `results` folder in the current directory with
 ```bash
-docker cp <contained id>:///easyminer-evaluation/results .
+docker cp <container id>:///easyminer-evaluation/results .
 ```
 
 where containedid can be retrieved with `docker ps --all`
