@@ -54,5 +54,9 @@ The [Evaluation test](./easyminercenter/complex) tests writes evaluation results
 docker run -it --network easyminer easyminer-evaluation python ./easyminercenter/complex/evaluation_test.py --api_url=http://easyminer-frontend/easyminercenter/api
 ```
 
+## Dependencies
+
+The evaluation datasets were created using [marcbench](https://github.com/kliegr/marcbench)  with discretization.
+
 
     
