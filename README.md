@@ -53,6 +53,13 @@ The [Complex test](./easyminercenter/complex) tests writes evaluation results (a
 docker run -it --network easyminer easyminer-evaluation python ./easyminercenter/complex/evaluation_test.py --api_url=http://easyminer-frontend/easyminercenter/api --cba --max_rules_count=80000
 ```
 
+After the test has finished, you can copy test results from the stopped container to `results` folder in the current directory with
+```bash
+docker cp <contained id>:///easyminer-evaluation/results .
+```
+
+where containedid can be retrieved with `docker ps --all`
+
 ## Dependencies
 
 The evaluation datasets were created using [marcbench](https://github.com/kliegr/marcbench)  with discretization.
